@@ -1,0 +1,26 @@
+{
+  "name": "lightbot-util",
+  "version": "0.0.2",
+  "description": "The libraries used by Lightbot-discord and Lightbot-mastodon",
+  "main": "LightPicture.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/narFnarF/lightbot-util.git"
+  },
+  "keywords": [
+    "Lightbot",
+    "narF"
+  ],
+  "author": "narF",
+  "bugs": {
+    "url": "https://github.com/narFnarF/lightbot-util/issues"
+  },
+  "homepage": "https://github.com/narFnarF/lightbot-util#readme",
+  "dependencies": {
+    "jimp": "^0.6.4",
+    "onecolor": "^3.1.0"
+  }
+}
