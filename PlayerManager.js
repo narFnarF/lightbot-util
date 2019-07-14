@@ -3,27 +3,20 @@
 // Dependencies
 const fs = require("fs");
 const Player = require('./Player.js');
-const logger = require("./logger.js");
+// const logger = require("./logger.js");
 const {promisify} = require('util');
-const config = require("./config.json");
-const appRoot = require('app-root-path').toString()
-const pathModule = require('path')
+// const config = require("./config.json");
+// const appRoot = require('app-root-path').toString()
+// const pathModule = require('path')
 
 const writeFilePromisified = promisify(fs.writeFile);
 
 class PlayerManager {
-	constructor(pathToDB, adminID) {
-		if (!pathToDB) {
-			logger.error(`The pathToDB was missing (set to ${pathToDB}). That's bad!`)
-			throw (`The pathToDB is missing.`); // TODO: correct syntax is: throw new Error ("bla bla")
-		}
-		if (!adminID) {
-			logger.warn(`The adminID was missing when creating a new PlayerManager at "${pathToDB}"`);
-		}
-
-		this.adminID = adminID;
-		this.pathToDB = pathToDB;
-		this.players = this.readDBFile(pathToDB); // this is done in sync
+	constructor() {
+		this.ready = false;
+		this.adminID;
+		this.pathToDB;
+		
 		this.currentlyWriting = false;
 		this.writeQueue = [];
 		this.needToWriteAgain = false;
@@ -32,6 +25,19 @@ class PlayerManager {
 
 		this.endLevel = 20 // Careful changing this: it'll probably break the color tint. The tint formula would need to be adjusted.
 		Player.endLevel = this.endLevel;
+	}
+
+	init(pathToDB, adminID) {
+		if (!pathToDB) {
+			throw new Error(`The pathToDB is missing. It was set to ${pathToDB}.`);
+		}
+		if (!adminID) {
+			throw new Error(`Missing adminID. It was set to ${adminID}.`);
+		}
+		this.ready = true;
+		this.adminID = adminID;
+		this.pathToDB = pathToDB;
+		this.players = this.readDBFile(pathToDB);
 	}
 
 	// get pathToDB() {
@@ -47,7 +53,7 @@ class PlayerManager {
 			try {
 				content = JSON.parse(txt);
 			} catch (err) {
-				logger.error(`The content of the JSON database at "${path}" is not formatted properly. Try to fix the JSON inside.`);
+				console.error(`The content of the JSON database at "${path}" is not formatted properly. Try to fix the JSON inside.`);
 				throw err;
 			}
 
@@ -76,30 +82,30 @@ class PlayerManager {
 			// Prepare the json string to write
 			var beautifulPlayersDB = JSON.stringify(this.players, null, 4);
 			if (!beautifulPlayersDB) { // if the json string is empty for some reason
-				logger.debug(`I'm about to write but beautifulPlayersDB is empty. Here's the object:`);
+				console.debug(`I'm about to write but beautifulPlayersDB is empty. Here's the object:`);
 				console.log(this.players);
 				throw `beautifulPlayersDB is empty!`;
 			}
 
 			// write the json file
 			try {
-				// logger.debug(`starting to write...`)
+				// console.debug(`starting to write...`)
 				await writeFilePromisified(this.pathToDB, beautifulPlayersDB, 'utf8')
 				this.currentlyWriting = false;
-				logger.debug(`Saved the DB to "${this.pathToDB}"`);
+				console.debug(`Saved the DB to "${this.pathToDB}"`);
 				// If there are more requests to save, we do them!
 				if (this.needToWriteAgain) {
 					this.needToWriteAgain = false;
-					// logger.debug(`needToWriteAgain`);
+					// console.debug(`needToWriteAgain`);
 					this.writeDBFile();
 				}
 
 			} catch (e) {
-				logger.warn(`Could not write "${this.pathToDB}" on disk.`);
-				logger.warn(e);
+				console.warn(`Could not write "${this.pathToDB}" on disk.`);
+				console.warn(e);
 			}
 		} else {
-			logger.warn(`Trying to write to "${this.pathToDB}", but i'm actually already writing! Will try again when it's done.`);
+			console.warn(`Trying to write to "${this.pathToDB}", but i'm actually already writing! Will try again when it's done.`);
 			// this.writeQueue.push(callback);
 			this.needToWriteAgain = true;
 		}
@@ -107,7 +113,7 @@ class PlayerManager {
 
 	createPlayer(userID, name) {
 		if (this.exists(userID)) { // If it already exists
-			logger.warn(`Trying to create a player that already exists: ${name} (${userID})`)
+			console.warn(`Trying to create a player that already exists: ${name} (${userID})`)
 			return this.players[userID];
 		} else {
 			var player = new Player(userID, name);
@@ -130,16 +136,16 @@ class PlayerManager {
 		// Returns the player with this userID
 		// Returns undefined if the player doesn't exist
 
-		// logger.info(`Getting player ${userID}`)
+		// console.info(`Getting player ${userID}`)
 		if (this.exists(userID)) {
 			if (this.players[userID] instanceof Player) {
 				return this.players[userID];
 			} else {
-				logger.warn(`Found a fake object! (It's not actually a member of class Player):`);
-				logger.warn(this.players[userID]);
+				console.warn(`Found a fake object! (It's not actually a member of class Player):`);
+				console.warn(this.players[userID]);
 				return undefined;
 			}
-			// logger.info(`Found it. Is it a member of Player? ${this.players[userID] instanceof Player}`)
+			// console.info(`Found it. Is it a member of Player? ${this.players[userID] instanceof Player}`)
 		} else {
 			return undefined;
 		}
@@ -158,7 +164,7 @@ class PlayerManager {
 		// usage: pm.isAdmin("1234567890")
 
 		var res = (userID == this.adminID);
-		// logger.debug(`Checking if ${userID} is an admin. The admin is ${this.adminID} so it is ${res}.`)
+		// console.debug(`Checking if ${userID} is an admin. The admin is ${this.adminID} so it is ${res}.`)
 		return res;
 	}
 
@@ -178,12 +184,10 @@ class PlayerManager {
 	}
 
 	async exit() {
-		logger.debug(`PlayerManager was asked to exit. Saving the DB to disk...`)
+		console.debug(`PlayerManager was asked to exit. Saving the DB to disk...`)
 		await this.writeDBFile();
-		logger.debug(`The DB is saved. PlayerManager will now exit.`)
+		console.debug(`The DB is saved. PlayerManager will now exit.`)
 	}
 }
 
-const playersDBPath = pathModule.join(appRoot, config.playersDBPath);
-const pm = new PlayerManager(playersDBPath, config.ownerAdmin.discordID);
-module.exports = pm;
+module.exports = new PlayerManager();

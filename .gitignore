@@ -1,3 +1,6 @@
 
 node_modules/
 output/
+
+db.json
+db_OLD.json
