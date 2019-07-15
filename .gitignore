@@ -1,6 +1,7 @@
 
 node_modules/
 output/
+.vscode/
 
 db.json
 db_OLD.json

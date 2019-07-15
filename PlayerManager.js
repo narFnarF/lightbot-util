@@ -13,12 +13,12 @@ const writeFilePromisified = promisify(fs.writeFile);
 
 class PlayerManager {
 	constructor() {
-		this.ready = false;
-		this.adminID;
+		this.initialized = false;
+		this.adminID; // TODO: Remove all adminID stuff. It's not used by Lightbot since the switch to Discord.js
 		this.pathToDB;
 		
 		this.currentlyWriting = false;
-		this.writeQueue = [];
+		// this.writeQueue = [];
 		this.needToWriteAgain = false;
 
 		// this.writeDBFile();
@@ -31,10 +31,10 @@ class PlayerManager {
 		if (!pathToDB) {
 			throw new Error(`The pathToDB is missing. It was set to ${pathToDB}.`);
 		}
-		if (!adminID) {
+		if (!adminID) { // TODO: Remove all adminID stuff
 			throw new Error(`Missing adminID. It was set to ${adminID}.`);
 		}
-		this.ready = true;
+		this.initialized = true;
 		this.adminID = adminID;
 		this.pathToDB = pathToDB;
 		this.players = this.readDBFile(pathToDB);
@@ -123,8 +123,10 @@ class PlayerManager {
 		}
 	}
 
-	exists(userID) {
-		// return true if the player exists in the DB
+	exists(userID) { // return true if the player exists in the DB
+
+		this.checkIfInitialized();
+
 		if (this.players[userID] == null) {
 			return false;
 		} else {
@@ -135,6 +137,8 @@ class PlayerManager {
 	getPlayer(userID) {
 		// Returns the player with this userID
 		// Returns undefined if the player doesn't exist
+
+		this.checkIfInitialized();
 
 		// console.info(`Getting player ${userID}`)
 		if (this.exists(userID)) {
@@ -163,30 +167,48 @@ class PlayerManager {
 		// Returns true if the id is the same as the admin's id.
 		// usage: pm.isAdmin("1234567890")
 
+		this.checkIfInitialized();
+
 		var res = (userID == this.adminID);
 		// console.debug(`Checking if ${userID} is an admin. The admin is ${this.adminID} so it is ${res}.`)
 		return res;
 	}
 
 	async levelUpPlayer(id) {
+		this.checkIfInitialized();
+
 		this.getPlayer(id).increaseLevel(); // do the level up
 		await this.writeDBFile();
 	}
 
 	async relight(id) {
+		this.checkIfInitialized();
+
 		this.getPlayer(id).increaseRelightCount();
 		await this.writeDBFile();
 	}
 
 	async updateLastPlayed(id) {
+		this.checkIfInitialized();
+
 		this.getPlayer(id).updateLastPlayed();
 		await this.writeDBFile();
 	}
 
 	async exit() {
+		this.checkIfInitialized();
+
 		console.debug(`PlayerManager was asked to exit. Saving the DB to disk...`)
 		await this.writeDBFile();
 		console.debug(`The DB is saved. PlayerManager will now exit.`)
+	}
+
+	checkIfInitialized() {
+		if (!this.initialized) {
+			const newErr = new Error("This PlayerManager was not initialized. You need to initialize it first by doing: playerManager.init(\"PATH/TO/DB\", \"YOUR_ADMIN_ID\");");
+			newErr.name = "PLAYER_MANAGER_NOT_INIT";
+			throw newErr;
+		}
 	}
 }
 
