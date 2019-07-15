@@ -2,7 +2,7 @@
   "name": "lightbot-util",
   "version": "0.1.0",
   "description": "The libraries used by Lightbot-discord and Lightbot-mastodon",
-  "main": "LightPicture.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
