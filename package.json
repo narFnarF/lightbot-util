@@ -1,6 +1,6 @@
 {
   "name": "lightbot-util",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The libraries used by Lightbot-discord and Lightbot-mastodon",
   "main": "LightPicture.js",
   "scripts": {
