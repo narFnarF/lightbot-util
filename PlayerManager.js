@@ -105,7 +105,7 @@ class PlayerManager {
 				console.warn(e);
 			}
 		} else {
-			console.warn(`Trying to write to "${this.pathToDB}", but i'm actually already writing! Will try again when it's done.`);
+			console.debug(`Trying to write to "${this.pathToDB}", but i'm actually already writing! Will try again when it's done.`);
 			// this.writeQueue.push(callback);
 			this.needToWriteAgain = true;
 		}

@@ -14,7 +14,7 @@ if (result) {
 }
 
 function test(left, right, nb) {
-	var verbose = true;
+	var verbose = false;
 	var successful = (left === right);
 	if (verbose) {
 		console.debug(`Test #${nb} ${successful}  ${left} == ${right}`);
