@@ -1,7 +1,7 @@
 "use strict";
 
 // var logger = require('./logger.js');
-const PlayerManager = require("./PlayerManager.js")
+const PlayerManager = require("../PlayerManager.js")
 const fs = require("fs");
 
 var allTestsSuccessful = true;
@@ -29,7 +29,7 @@ function test(left, right, nb) {
 
 function runTests() {
 	// ----------------------- 1st batch of tests: without initialisation  ---------------------
-	const pmNotInit = require('./PlayerManager.js');
+	const pmNotInit = require('../PlayerManager.js');
 	
 	try {
 		pmNotInit.getPlayer("whatever");
@@ -60,7 +60,7 @@ function runTests() {
 		fs.renameSync(dbPath, "./db_OLD.json");
 	}
 	
-	const pm = require('./PlayerManager.js');
+	const pm = require('../PlayerManager.js');
 	pm.init(dbPath, admin);
 
 
@@ -111,7 +111,7 @@ function runTests() {
 	
 	// ----------------------- 2ème batch de tests: Utiliser une DB qui existe déjà ----------
 	
-	const pm2 = require('./PlayerManager.js');
+	const pm2 = require('../PlayerManager.js');
 	const dbPath2 = `./testDB.json`;
 	const admin2 = `${Math.random()}`;
 	

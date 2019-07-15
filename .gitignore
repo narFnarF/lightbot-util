@@ -1,7 +1,7 @@
 
 node_modules/
-output/
+tests/output/
 .vscode/
 
-db.json
-db_OLD.json
+tests/db.json
+tests/db_OLD.json
