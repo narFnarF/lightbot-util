@@ -15,6 +15,12 @@ class LightPicture {
          workingDimention: 600
       }
 
+      if (size == undefined) {
+         throw new Error("Size parameter is undefined.");
+      } else if (outputpath == undefined || outputpath == "" || outputpath == ".") {
+         throw new Error("outputpath parameter is undefined. At least put a file name!");
+      }
+
       // console.log(`A new LightPicture of size ${size}.`);
       var actualCellDimention = Math.floor(this.constantes.workingDimention / this.lightGrid.length);
       var actualDimention = this.lightGrid.length * actualCellDimention;
