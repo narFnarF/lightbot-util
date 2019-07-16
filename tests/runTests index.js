@@ -2,10 +2,11 @@
 
 const util = require('../index.js');
 
+const LightPicture = require('../index.js').LightPicture;
+
 console.log(util.LightPicture);
 
-const LightPicture = util.LightPicture;
-const lp = new LightPicture(5, "yo.png", ()=>{
+const lp = new LightPicture(2, "tests/output/yo.png", ()=>{
     console.log(lp);
     
 });

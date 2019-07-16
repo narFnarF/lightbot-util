@@ -1,10 +1,4 @@
 "use strict";
 
-class Util {
-   
-   constructor(){
-      this.PlayerManager = require('./PlayerManager.js');
-      this.LightPicture = require('./LightPicture.js');
-   }
-}
-module.exports = new Util();
+module.exports.PlayerManager = require('./PlayerManager.js');
+module.exports.LightPicture = require('./LightPicture.js');
