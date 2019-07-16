@@ -1,7 +1,7 @@
 "use strict";
 
 // var logger = require('./logger.js');
-const PlayerManager = require("../PlayerManager.js")
+const PlayerManager = require("../index.js").PlayerManager;
 const fs = require("fs");
 
 var allTestsSuccessful = true;

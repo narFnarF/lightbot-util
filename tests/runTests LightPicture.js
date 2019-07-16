@@ -1,6 +1,6 @@
 "use strict";
 
-var LightPicture = require("../LightPicture.js");
+var LightPicture = require("../index.js").LightPicture;
 // var logger = require("winston")
 
 
