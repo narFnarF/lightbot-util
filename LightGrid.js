@@ -40,6 +40,7 @@ class LightGrid {
          cellLit = 1+Math.floor(Math.random()*(this.area-1));
          this.fillGrid(cellLit, LightGrid.FILLED, LightGrid.NOT_FILLED);
       }
+      // this.makeSymetric()
       // console.log(this.grid);
    }
 
@@ -118,6 +119,7 @@ class LightGrid {
          // this.setCellAt(randomList[i], a);
       }
    }
+
    toString() {
       var out = "";
       for (var y=0; y<this.length; y++){
@@ -143,6 +145,27 @@ class LightGrid {
             }
          }
       }
+   }
+
+   forEachCell(callbackFunction) {
+      for (var x = 0; x<this.length; x++) {
+         for (var y = 0; y<this.length; y++) {
+            callbackFunction(x, y);
+         }
+      }
+   }
+
+
+   makeSymetric() {
+      var middle = Math.floor( this.length/2 )
+      this.forEachCell((x,y)=>{
+         if (x < middle) {//is in the left side
+            //copy to the right side
+            var xPrime = this.length - x -1;
+            this.setCellXY(xPrime, y, this.cellXY(x,y));
+         }
+      })
+      
    }
 
 }
