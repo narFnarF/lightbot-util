@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/narFnarF/lightbot-util#readme",
   "dependencies": {
-    "jimp": "^0.6.4",
+    "jimp": "^0.12.0",
     "onecolor": "^3.1.0"
   }
 }
